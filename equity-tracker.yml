@@ -1,0 +1,57 @@
+name: TOKE Equity Engine
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  calculate-equity-impact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Base
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # Access previous commit for precise algorithmic diff calculation
+
+      - name: Parse Cryptographic Signature & Quantify Impact
+        run: |
+          echo "=== Executing TOKE Ledger Audit ==="
+          
+          # 1. Capture the developer identity and unique commit block hash
+          DEVELOPER=$(git log -1 --pretty=format:'%an <%ae>')
+          COMMIT_HASH=$(git log -1 --pretty=format:'%H')
+          TIMESTAMP=$(git log -1 --pretty=format:'%ct')
+          
+          # 2. Extract the strict cryptographic signature verification status
+          # G = Good/Verified signature, N = No signature, U = Unverified
+          SIG_STATUS=$(git log -1 --pretty=format:'%G?')
+          
+          if [ "$SIG_STATUS" != "G" ]; then
+            echo "🚨 REJECTED: Commit signature validation failure. Equity allocation blocked."
+            exit 1
+          fi
+
+          # 3. Compute raw lines inserted/deleted to evaluate code impact
+          DIFF_SUMMARY=$(git diff --shortstat HEAD~1 HEAD)
+          
+          echo "Identity Verified: $DEVELOPER"
+          echo "Impact Footprint: $DIFF_SUMMARY"
+          
+          # 4. Append the entry to your master markdown ledger file
+          mkdir -p docs
+          if [ ! -f docs/EQUITY_MATRIX.md ]; then
+            echo "# Δ9 TOKE Governance Matrix" > docs/EQUITY_MATRIX.md
+            echo "| Timestamp | Verified Contributor | Commit SHA Block | Computational Delta |" >> docs/EQUITY_MATRIX.md
+            echo "|---|---|---|---|" >> docs/EQUITY_MATRIX.md
+          fi
+          
+          echo "| $TIMESTAMP | $DEVELOPER | \`$COMMIT_HASH\` | $DIFF_SUMMARY |" >> docs/EQUITY_MATRIX.md
+
+      - name: Commit and Sync Ledger Balance
+        run: |
+          git config --local user.email "engine-bot@toke.io"
+          git config --local user.name "Δ9 TOKE Engine Automation"
+          git add docs/EQUITY_MATRIX.md
+          git commit -m "chore: Log community verification block [$GITHUB_SHA]" || exit 0
+          git push origin main
