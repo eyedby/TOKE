@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Δ9 TOKE Engine</title>
+  <!-- ✓ Load Blockchain Buffer Support -->
+  <script src="https://cdn.jsdelivr.net/npm/buffer@latest/index.min.js"></script>
+  <!-- ✓ Load Solana Web3 API Architecture Natively -->
+  <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -78,6 +82,10 @@
     </div>
   </div>
 
+  <script>
+    // Initialize the cross-context buffer binding
+    window.Buffer = window.buffer.Buffer;
+  </script>
   <script type="module" src="popup.js"></script>
 </body>
 </html>
