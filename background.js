@@ -1,30 +1,26 @@
-﻿// Track Beta: Dynamic Header Injection & Sandbox Communication Link
-chrome.runtime.onInstalled.addListener(async () => {
-  console.log("Δ9 Engine Initialized: Setting up local key perimeters.");
+﻿// Track Beta: Live Cross-Browser Token Header Injector
+let activeAttentionToken = "AWAITING_INITIAL_MINT";
+
+// Listen for messages from the popup cockpit to update the active token
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "UPDATE_ATTENTION_TOKEN") {
+    activeAttentionToken = request.token;
+    console.log("Δ9 Perimeter Stamped with token:", activeAttentionToken);
+  }
+  if (request.action === "TRIGGER_PHANTOM_CONNECT") {
+    chrome.tabs.create({ url: "https://solscan.io" });
+  }
 });
 
-// Intercept outgoing network headers and inject tokens
+// Stamped on every outgoing HTTP packet header across the network wires
 chrome.webRequest.onBeforeSendHeaders.addListener(
   (details) => {
-    const timestamp = Math.floor(Date.now() / 1000);
-    const windowBlock = Math.floor(timestamp / 600);
-    
     details.requestHeaders.push({
       name: "X-Delta9-Consent",
-      value: `SIG_BLOCK_${windowBlock}_VERIFIED`
+      value: activeAttentionToken
     });
-
     return { requestHeaders: details.requestHeaders };
   },
   { urls: ["<all_urls>"] },
   ["blocking", "requestHeaders", "extraHeaders"]
 );
-
-// Listen for sandbox bridge requests from the dashboard popup interface
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "TRIGGER_PHANTOM_CONNECT") {
-    console.log("Routing connection trace request...");
-    // Open a fresh tab to a web destination where window.phantom can safely mount
-    chrome.tabs.create({ url: "https://solscan.io" });
-  }
-});
