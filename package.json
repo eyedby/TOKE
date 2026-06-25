@@ -1,15 +1,29 @@
-{
-  "name": "toke-repo",
-  "version": "1.0.0",
-  "description": "Hardened token utility and static interface",
-  "main": "scripts/mint-logic.js",
-  "type": "module",
+﻿{
+  "name": "toke-engine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Line-rate cryptographic validation header engine for the Δ9 Consent Stack.",
   "scripts": {
-    "mint": "node scripts/mint-logic.js"
+    "start": "react-scripts start",
+    "build": "react-scripts build && powershell copy-item manifest.json,background.js build/",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "dependencies": {
-    "@solana/web3.js": "^1.91.0",
-    "@solana/spl-token": "^0.4.6",
-    "dotenv": "^16.4.5"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
