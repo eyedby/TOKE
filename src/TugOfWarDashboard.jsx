@@ -1,5 +1,6 @@
 ﻿import React, { useState, useEffect, useRef } from 'react';
 import { Delta9MintEngine } from './mintEngine';
+import { XdpTelemetryParser } from './xdpParser';
 
 export default function TugOfWarDashboard() {
   const [timeLeft, setTimeLeft] = useState(172800); // 48 hours in seconds
@@ -9,6 +10,7 @@ export default function TugOfWarDashboard() {
   const [stats, setStats] = useState({ scrapersBlocked: 14209, piiCordsCut: 432, amokBurned: 89045 });
 
   const mintEngineRef = useRef(new Delta9MintEngine());
+  const xdpParserRef = useRef(new XdpTelemetryParser());
   const canvasRef = useRef(null);
 
   const votesYes = 64200;
@@ -16,29 +18,36 @@ export default function TugOfWarDashboard() {
   const totalVotes = votesYes + votesNo;
   const yesPercentage = ((votesYes / totalVotes) * 100).toFixed(1);
 
-  // Countdown clock loop & Active Spatial Minting Engine Hooks
   useEffect(() => {
+    // 1. Core Lifecycle Countdown
     const timer = setInterval(() => setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0)), 1000);
     
-    // Initialize the WebAR tracking engine core
     if (canvasRef.current) {
+      // 2. Track Alpha: WebAR Spatial Minting Loops
       mintEngineRef.current.initializeGazeTracker(canvasRef.current);
-      
-      // Simulate real-time 10-minute sliding window attention checks
       const mintInterval = setInterval(async () => {
         const mockGazeVector = { x: Math.random(), y: Math.random() };
         const mintResult = await mintEngineRef.current.mintAttentionToken(mockGazeVector);
-        
         if (mintResult) {
           setLiveToken(mintResult.token);
-          // Increase token counts inside the local tracking state
           setStats(prev => ({ ...prev, amokBurned: prev.amokBurned + 100 }));
         }
-      }, 5000); // Check engine intervals every 5s
+      }, 5000);
+
+      // 3. Track Gamma: High-Frequency XDP Kernel Ticks
+      const kernelTelemetryInterval = setInterval(() => {
+        const liveTicks = xdpParserRef.current.generateLiveNetworkTick();
+        setStats(prev => ({
+          ...prev,
+          scrapersBlocked: liveTicks.scrapersBlocked,
+          piiCordsCut: liveTicks.piiCordsCut
+        }));
+      }, 1500); // Poll frame updates every 1.5 seconds
 
       return () => {
         clearInterval(timer);
         clearInterval(mintInterval);
+        clearInterval(kernelTelemetryInterval);
       };
     }
 
@@ -65,7 +74,6 @@ export default function TugOfWarDashboard() {
 
   return (
     <div style={{ backgroundColor: '#000000', color: '#ffffff', fontFamily: 'monospace', padding: '20px', maxWidth: '420px', border: '2px solid #333333', textTransform: 'uppercase' }}>
-      {/* Hidden tracker tracking element anchor */}
       <canvas ref={canvasRef} style={{ display: 'none' }} width="1" height="1" />
 
       <div style={{ borderBottom: '2px dashed #333333', paddingBottom: '10px', marginBottom: '15px' }}>
@@ -73,7 +81,6 @@ export default function TugOfWarDashboard() {
         <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#ff3333', marginTop: '4px' }}>Δ9 TOKE ENGINE v0.1</div>
       </div>
 
-      {/* Mint Token Display Cockpit */}
       <div style={{ marginBottom: '15px', border: '1px solid #444444', padding: '8px', backgroundColor: '#0a0a0a' }}>
         <div style={{ fontSize: '10px', color: '#888888' }}>ACTIVE ATTENTION TOKEN (TRACK ALPHA)</div>
         <div style={{ fontSize: '11px', color: '#ffff00', marginTop: '2px', wordBreak: 'break-all' }}>{liveToken}</div>
