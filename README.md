@@ -15,7 +15,7 @@ By pulling the token mechanics out of legacy app-tech sandboxes and hosting fram
 We reject third-party blockchain gas fees, transaction delays, and centralized issuance structures. In this repository, token issuance and burning are treated as a direct function of raw network physics: **human attention mints tokens, and AI data extraction burns them.**
 
 1. **Sovereign Local Keying**: The browser extension uses pure, local **ED25519 cryptography** to sign sliding 10-minute time-stamps on-device with zero ledger latency.
-2. **Dynamic Header Injection**: The signed hash is stamped directly onto every outbound HTTP packet header (`X-Delta9-Token`), serving as an un-spoofable on-demand validation token.
+2. **Dynamic Header Injection**: The signed hash is stamped directly onto every outbound HTTP packet header (`Δ9`), serving as an un-spoofable on-demand validation token.
 3. **Line-Rate Enforcement**: Segment 0 network cards (running Cloudflare Workers or eBPF/XDP filters) parse the packet header and execute raw mathematical verification checks in nanoseconds. Valid tokens clear the wire; anomalous machine fuzzing triggers an immediate, un-intrusive alert trace.
 
 ---
