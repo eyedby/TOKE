@@ -1,0 +1,15 @@
+{
+  "name": "toke-repo",
+  "version": "1.0.0",
+  "description": "Hardened token utility and static interface",
+  "main": "scripts/mint-logic.js",
+  "type": "module",
+  "scripts": {
+    "mint": "node scripts/mint-logic.js"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.91.0",
+    "@solana/spl-token": "^0.4.6",
+    "dotenv": "^16.4.5"
+  }
+}

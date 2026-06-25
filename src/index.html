@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMOK Gateway</title>
+    <style>
+        body { font-family: monospace; background: #0b0b0b; color: #00ff66; padding: 20px; }
+        .container { max-width: 600px; margin: 50px auto; border: 1px solid #00ff66; padding: 30px; box-shadow: 0 0 15px rgba(0,255,102,0.2); }
+        button { background: #00ff66; color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; font-family: monospace; }
+        button:hover { background: #fff; }
+        .hidden { display: none; }
+        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>PROTOCOL GATEWAY</h2>
+        <hr style="border-color: #00ff66;">
+        
+        <div id="landing-view">
+            <p>Access requires an active cryptographic subscription tier managed by the Token-2022 protocol layout.</p>
+            <button id="connect-btn">CONNECT WALLET FROM TOOLBAR</button>
+        </div>
+
+        <div id="locked-view" class="hidden">
+            <h3 style="color: #ff3333;">ACCESS DENIED</h3>
+            <p id="error-message"></p>
+            <p>Please purchase or upgrade your subscription tier to unlock this module.</p>
+            <button onclick="window.location.reload()">TRY AGAIN</button>
+        </div>
+
+        <div id="dashboard-view" class="hidden">
+            <h3 style="color: #00ff66;">ACCESS GRANTED // LIVE CONSOLE</h3>
+            <p>Welcome back, operator. Your Token-2022 subscription layout is fully verified.</p>
+        </div>
+
+        <div id="privacy-gate" style="margin-top: 20px; border: 1px dashed #00ff66; padding: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong style="color: #fff;">AI OUT // PRIVACY PROTOCOL</strong>
+                    <p style="margin: 5px 0 0 0; font-size: 11px; color: #888;">Deploy cryptographic gate headers and meter off automated scrapers.</p>
+                </div>
+                <div>
+                    <label class="switch">
+                        <input type="checkbox" id="ai-out-toggle">
+                        <span id="toggle-visual" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; border: 1px solid #00ff66; transition: .3s;"></span>
+                    </label>
+                </div>
+            </div>
+            <div id="gate-status" style="margin-top: 10px; font-size: 12px; color: #ff3333;">STATUS: GATE OPEN (DATA REVEALED)</div>
+        </div>
+    </div>
+
+    <script>
+        const connectBtn = document.getElementById("connect-btn");
+        const landingView = document.getElementById("landing-view");
+        const lockedView = document.getElementById("locked-view");
+        const dashboardView = document.getElementById("dashboard-view");
+        const errorMsg = document.getElementById("error-message");
+        const aiOutToggle = document.getElementById("ai-out-toggle");
+        const toggleVisual = document.getElementById("toggle-visual");
+        const gateStatus = document.getElementById("gate-status");
+
+        connectBtn.addEventListener("click", async () => {
+            if (!window.solana) {
+                alert("No compatible wallet detected in toolbar. Please install Phantom or Solflare.");
+                return;
+            }
+            try {
+                const response = await window.solana.connect();
+                verifySubscriptionProtocol(response.publicKey.toString());
+            } catch (err) {
+                console.error("User rejected connection.", err);
+            }
+        });
+
+        function verifySubscriptionProtocol(address) {
+            const isSubscribed = false; 
+            if (!isSubscribed) {
+                landingView.classList.add("hidden");
+                lockedView.classList.remove("hidden");
+                errorMsg.innerText = "Wallet " + address.substring(0,6) + "..." + address.substring(38) + " fails Level 2 access criteria.";
+            } else {
+                landingView.classList.add("hidden");
+                dashboardView.classList.remove("hidden");
+            }
+        }
+
+        aiOutToggle.addEventListener("change", (e) => {
+            if (e.target.checked) {
+                toggleVisual.style.backgroundColor = "#00ff66";
+                gateStatus.style.color = "#00ff66";
+                gateStatus.innerText = "STATUS: ENFORCED // BRICK WALL COMPLIANT (AI OUT NO-INGEST)";
+                let metaShield = document.createElement("meta");
+                metaShield.name = "robots";
+                metaShield.content = "noindex, noimageindex, noai, noimageai";
+                metaShield.id = "crypto-privacy-shield";
+                document.head.appendChild(metaShield);
+            } else {
+                toggleVisual.style.backgroundColor = "#333";
+                gateStatus.style.color = "#ff3333";
+                gateStatus.innerText = "STATUS: GATE OPEN (DATA REVEALED)";
+                const activeShield = document.getElementById("crypto-privacy-shield");
+                if (activeShield) activeShield.remove();
+            }
+        });
+    </script>
+</body>
+</html>
