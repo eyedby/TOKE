@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        { "header": "X-Delta9-Consent", "operation": "set", "value": "A9_GATE_OPEN" }
+      ]
+    },
+    "condition": { 
+      "urlFilter": "*", 
+      "resourceTypes": [
+        "main_frame", "sub_frame", "stylesheet", "script", 
+        "image", "font", "object", "xmlhttprequest", 
+        "ping", "csp_report", "media", "websocket", "other"
+      ] 
+    }
+  }
+]
