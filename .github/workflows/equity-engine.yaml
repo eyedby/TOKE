@@ -23,7 +23,7 @@ jobs:
           SIG_STATUS=$(git log -1 --pretty=format:'%G?')
           
           if [ "$SIG_STATUS" != "G" ]; then
-            echo "🚨 REJECTED: Commit signature validation failure. Equity allocation blocked."
+            echo " REJECTED: Commit signature validation failure. Equity allocation blocked."
             exit 1
           fi
 
